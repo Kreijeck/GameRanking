@@ -31,7 +31,8 @@ def view_results(list_name):
     # Verarbeitung, um die notwendigen Daten für die Anzeige zu erhalten
     # (Diese Logik muss noch implementiert werden)
     sum_list = calc_sum(list_name)
-    return render_template('view_results.html', list_name=list_name, results=sum_list)
+    user_list = ["Thomas", "Nils", "Alex", "Thomas E."]
+    return render_template('view_results.html', list_name=list_name, game_data=sum_list, user_list=user_list)
 
 if __name__ == '__main__':
     app.run(debug=True)

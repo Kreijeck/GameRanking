@@ -4,19 +4,62 @@
     <title>Ergebnisse - {{ list_name }}</title>
     <!-- Einbinden von Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
 </head>
 <body>
     <h1>Ergebnisse für {{ list_name }}</h1>
-    <p> {{ results }}</p>
-    <!-- Anzeige der Ergebnisse und Namen -->
-    <!-- ... (Code zur Anzeige der Ergebnisse) ... -->
+    <!-- Anzeige der Ergebnisse -->
+    <p> Folgende Personen haben bereits abgestimmt:</p>
+    <ul>
+        {% for user in user_list %}
+        <li> {{ user }}</li>
+        {% endfor %}
+    </ul>
 
     <!-- Container für das Bardiagramm -->
     <canvas id="resultsChart"></canvas>
 
+    <div id="gameData" data-games="{{ game_data | tojson | safe }}"></div>
+
     <script>
-        // JavaScript für das Bardiagramm mit Chart.js
-        // (Hier müssen Sie die Daten aus Ihren Ergebnissen entsprechend einbinden)
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('resultsChart').getContext('2d');
+    
+            var gameData = {{ game_data | tojson }};
+    
+            // Umwandeln des Objekts in ein Array von [key, value]-Paaren und Sortieren
+            var sortedGameData = Object.entries(gameData).sort((a, b) => b[1] - a[1]);
+    
+            // Trennen der Schlüssel und Werte nach der Sortierung
+            var gameNames = sortedGameData.map(item => item[0]);
+            var gameScores = sortedGameData.map(item => item[1]);
+    
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: gameNames,
+                    datasets: [{
+                        label: 'Punktzahl',
+                        data: gameScores,
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
     </script>
+    
+    
+    
 </body>
 </html>
