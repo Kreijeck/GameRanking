@@ -13,6 +13,11 @@
         {% endfor %}
     </ul>
     <h2>Ergebnisse ansehen</h2>
+<ul>
+    {% for list_name in games_lists.keys() %}
+        <li><a href="{{ url_for('view_results', list_name=list_name) }}">Ergebnisse für {{ list_name }}</a></li>
+    {% endfor %}
+</ul>
 </body>
 
 </html>

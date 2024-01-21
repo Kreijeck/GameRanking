@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 from lib.yaml_ops import load_games, save_ranking
+from lib.utils import calc_sum
 
 app = Flask(__name__)
 
@@ -24,12 +25,13 @@ def list_details(list_name):
 
     return render_template('list_details.html', list_name=list_name, games=games)
 
-# @app.route('/view_results/<list_name>')
-# def view_results(list_name):
-#     # Lade die Ergebnisse aus der 'rankings.yaml'-Datei
-#     # Verarbeitung, um die notwendigen Daten für die Anzeige zu erhalten
-#     # (Diese Logik muss noch implementiert werden)
-#     return render_template('view_results.html', list_name=list_name, results=processed_results)
+@app.route('/view_results/<list_name>')
+def view_results(list_name):
+    # Lade die Ergebnisse aus der 'rankings.yaml'-Datei
+    # Verarbeitung, um die notwendigen Daten für die Anzeige zu erhalten
+    # (Diese Logik muss noch implementiert werden)
+    sum_list = calc_sum(list_name)
+    return render_template('view_results.html', list_name=list_name, results=sum_list)
 
 if __name__ == '__main__':
     app.run(debug=True)
