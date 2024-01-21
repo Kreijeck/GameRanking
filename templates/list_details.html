@@ -23,7 +23,7 @@
             function updateDropdowns() {
                 let allSelectedValues = Array.from(document.querySelectorAll('select'))
                                             .map(select => select.value);
-
+    
                 document.querySelectorAll('select').forEach(function(select) {
                     let currentValue = select.value;
                     select.querySelectorAll('option').forEach(function(option) {
@@ -35,16 +35,33 @@
                     });
                 });
             }
-
+    
+            // Funktion, die überprüft, ob alle Dropdown-Menüs ausgefüllt sind
+            function validateForm() {
+                let allSelects = document.querySelectorAll('select');
+                for (let select of allSelects) {
+                    if (select.value === "") {
+                        alert("Bitte fülle alle Felder aus, ansonsten kann deine Eingabe nicht gespeichert werden.");
+                        return false;  // Verhindert das Absenden des Formulars
+                    }
+                }
+                return true;  // Erlaubt das Absenden des Formulars
+            }
+    
             // Event-Listener für die Änderung der Dropdown-Menüs
             document.querySelectorAll('select').forEach(function(select) {
                 select.addEventListener('change', updateDropdowns);
             });
-
+    
+            // Event-Listener für das Formular-Submit
+            let form = document.querySelector('form');
+            form.onsubmit = validateForm;
+    
             // Initialer Aufruf, um die Dropdown-Menüs richtig zu initialisieren
             updateDropdowns();
         });
     </script>
+    
 </head>
 <body>
     <h1>{{ list_name }}</h1>
