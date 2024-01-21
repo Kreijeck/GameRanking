@@ -19,14 +19,14 @@
 
     <!-- Container für das Bardiagramm -->
     <canvas id="resultsChart"></canvas>
-
+    
     <div id="gameData" data-games="{{ game_data | tojson | safe }}"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('resultsChart').getContext('2d');
     
-            var gameData = {{ game_data | tojson }};
+            var gameData = {{ game_data | tojson | safe}};
     
             // Umwandeln des Objekts in ein Array von [key, value]-Paaren und Sortieren
             var sortedGameData = Object.entries(gameData).sort((a, b) => b[1] - a[1]);
