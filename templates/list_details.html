@@ -49,6 +49,10 @@
 <body>
     <h1>{{ list_name }}</h1>
     <form method="post">
+        <div class="game-container">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Name eintragen">
+        </div>
         {% for game in games %}
             <div class="game-container">
                 <label for="rank-{{ game }}">{{ game }}</label>
@@ -60,10 +64,7 @@
                 </select>
             </div>
         {% endfor %}
-        <div class="game-container">
-            <label for="name">Ihr Name:</label>
-            <input type="text" id="name" name="name" required>
-        </div>
+        
         <input type="submit" value="Rankings speichern">
     </form>
 </body>

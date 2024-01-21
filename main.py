@@ -1,14 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
-import yaml
+
+from lib.yaml_ops import load_games, save_ranking
 
 app = Flask(__name__)
 
-yaml_file = 'games_list.yaml'
 
-def load_games():
-    with open(yaml_file, 'r') as file:
-        data = yaml.safe_load(file)
-        return data.get('games', {})
 
 @app.route('/')
 def index():
@@ -28,22 +24,12 @@ def list_details(list_name):
 
     return render_template('list_details.html', list_name=list_name, games=games)
 
-def save_ranking(list_name, user_name, rankings):
-    # Lese vorhandene Rankings
-    try:
-        with open('rankings.yaml', 'r') as file:
-            all_rankings = yaml.safe_load(file) or {}
-    except FileNotFoundError:
-        all_rankings = {}
-
-    # Füge neue Rankings hinzu
-    if list_name not in all_rankings:
-        all_rankings[list_name] = []
-    all_rankings[list_name].append({'user': user_name, 'rankings': rankings})
-
-    # Speichere die aktualisierten Rankings
-    with open('rankings.yaml', 'w') as file:
-        yaml.dump(all_rankings, file)
+# @app.route('/view_results/<list_name>')
+# def view_results(list_name):
+#     # Lade die Ergebnisse aus der 'rankings.yaml'-Datei
+#     # Verarbeitung, um die notwendigen Daten für die Anzeige zu erhalten
+#     # (Diese Logik muss noch implementiert werden)
+#     return render_template('view_results.html', list_name=list_name, results=processed_results)
 
 if __name__ == '__main__':
     app.run(debug=True)
