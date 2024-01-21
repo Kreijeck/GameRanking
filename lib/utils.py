@@ -12,6 +12,8 @@ def _get_game_keys(spielliste: str) -> list:
 def _get_ranks(spielliste: str) -> list[dict]:
     return [rank.get('rankings') for rank in load_ranking(spielliste)]
     
+def get_users(spielliste: str) -> list:
+    return[user.get('user', "") for user in load_ranking(spielliste)]
 
 def calc_sum(spielliste: str) -> dict:
     game_keys = _get_game_keys(spielliste)
