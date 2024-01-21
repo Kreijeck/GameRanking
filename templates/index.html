@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+    <title>Spiellisten</title>
+</head>
+<body>
+    <h1>Spiellisten</h1>
+    <ul>
+        {% for list_name in games_lists.keys() %}
+            <li><a href="{{ url_for('list_details', list_name=list_name) }}">{{ list_name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

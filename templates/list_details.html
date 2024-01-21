@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+    <title>{{ list_name }}</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funktion, um die Dropdown-Menüs zu aktualisieren
+            function updateDropdowns() {
+                let allSelectedValues = Array.from(document.querySelectorAll('select'))
+                                            .map(select => select.value);
+
+                document.querySelectorAll('select').forEach(function(select) {
+                    let currentValue = select.value;
+                    select.querySelectorAll('option').forEach(function(option) {
+                        if (option.value !== currentValue && allSelectedValues.includes(option.value)) {
+                            option.disabled = true;
+                        } else {
+                            option.disabled = false;
+                        }
+                    });
+                });
+            }
+
+            // Event-Listener für die Änderung der Dropdown-Menüs
+            document.querySelectorAll('select').forEach(function(select) {
+                select.addEventListener('change', updateDropdowns);
+            });
+
+            // Initialer Aufruf, um die Dropdown-Menüs richtig zu initialisieren
+            updateDropdowns();
+        });
+    </script>
+</head>
+<body>
+    <h1>{{ list_name }}</h1>
+    <form method="post">
+        {% for game in games %}
+            <div>
+                <label for="rank-{{ game }}">{{ game }}</label>
+                <select name="rank-{{ game }}" id="rank-{{ game }}">
+                    <option value="">Wählen...</option>
+                    {% for i in range(games|length) %}
+                        <option value="{{ i+1 }}">{{ i+1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endfor %}
+        <input type="submit" value="Rankings speichern">
+    </form>
+</body>
+</html>
+
