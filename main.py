@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
 
 from lib.yaml_ops import load_games, load_ranking_all, save_ranking, delete_user_in_ranking
@@ -53,4 +54,6 @@ def delete_user(list_name, user_name):
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    # Abrufen des Ports aus der Umgebungsvariable
+    port = int(os.environ.get('PORT', 5000))  # Standardwert 5000, falls die Umgebungsvariable nicht gesetzt ist
+    app.run(host='0.0.0.0', port=port)
