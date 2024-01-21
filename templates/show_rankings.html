@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <title>Rankings anzeigen</title>
+</head>
+<body>
+    <h1>Rankings</h1>
+    {% for list_name, list_rankings in rankings.items() %}
+        <h2>{{ list_name }}</h2>
+        <ul>
+            {% for entry in list_rankings %}
+                <li>
+                    {{ entry['user'] }}: {{ entry['rankings'] }}
+                    <!-- Link zum Löschen eines Benutzers -->
+                    <form action="{{ url_for('delete_user', list_name=list_name, user_name=entry['user']) }}" method="post">
+                        <input type="submit" value="Benutzer löschen">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
