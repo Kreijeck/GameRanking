@@ -2,6 +2,21 @@
 <html>
 <head>
     <title>{{ list_name }}</title>
+    <style>
+        select option[disabled] {
+            display: none;
+        }
+        select {
+            width: 50px;
+            margin-right: 10px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        .game-container {
+            margin-bottom: 10px;
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Funktion, um die Dropdown-Menüs zu aktualisieren
@@ -35,7 +50,7 @@
     <h1>{{ list_name }}</h1>
     <form method="post">
         {% for game in games %}
-            <div>
+            <div class="game-container">
                 <label for="rank-{{ game }}">{{ game }}</label>
                 <select name="rank-{{ game }}" id="rank-{{ game }}">
                     <option value="">Wählen...</option>
@@ -45,7 +60,7 @@
                 </select>
             </div>
         {% endfor %}
-        <div>
+        <div class="game-container">
             <label for="name">Ihr Name:</label>
             <input type="text" id="name" name="name" required>
         </div>
