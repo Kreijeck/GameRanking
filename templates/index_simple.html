@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Spiellisten</title>
+</head>
+
+<body>
+    <h1>Spiellisten</h1>
+    <ul>
+        {% for game in games_lists %}
+        <li><a href="/">{{ game }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
