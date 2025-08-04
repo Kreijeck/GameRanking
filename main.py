@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 
 from lib.yaml_ops import load_games, load_ranking_all, save_ranking, delete_user_in_ranking, save_new_game_list, delete_game_list
-from lib.utils import calc_sum, get_users
+from lib.utils import calc_sum, get_users, calc_detailed_data
 
 app = Flask(__name__)
 
@@ -33,10 +33,11 @@ def list_details(list_name):
 def view_results(list_name):
     # Lade die Ergebnisse aus der 'rankings.yaml'-Datei
     # Verarbeitung, um die notwendigen Daten für die Anzeige zu erhalten
-    # (Diese Logik muss noch implementiert werden)
     sum_list = calc_sum(list_name)
+    detailed_data = calc_detailed_data(list_name)
     user_list = get_users(list_name)
-    return render_template('view_results.html', list_name=list_name, game_data=sum_list, user_list=user_list)
+    return render_template('view_results.html', list_name=list_name, 
+                         game_data=sum_list, detailed_data=detailed_data, user_list=user_list)
 
 @app.route('/show_rankings')
 def show_rankings():

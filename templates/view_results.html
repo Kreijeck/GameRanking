@@ -201,6 +201,7 @@
             
             // Daten aus dem Backend
             var gameData = JSON.parse('{{ game_data | tojson | safe }}');
+            var detailedData = JSON.parse('{{ detailed_data | tojson | safe }}');
 
             // Umwandeln des Objekts in ein Array von [key, value]-Paaren und Sortieren
             var sortedGameData = Object.entries(gameData).sort(function(a, b) { 
@@ -259,15 +260,51 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
                             titleColor: 'white',
                             bodyColor: 'white',
                             borderWidth: 2,
                             borderColor: 'rgba(255, 255, 255, 0.3)',
-                            cornerRadius: 10,
+                            cornerRadius: 12,
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 12
+                            },
                             callbacks: {
+                                title: function(context) {
+                                    return '🎲 ' + context[0].label;
+                                },
                                 label: function(context) {
-                                    return 'Punkte: ' + context.parsed.x;
+                                    var gameName = context.label;
+                                    var totalPoints = context.parsed.x;
+                                    var gameDetails = detailedData[gameName];
+                                    
+                                    var lines = ['📊 Gesamtpunkte: ' + totalPoints];
+                                    lines.push(''); // Leerzeile
+                                    lines.push('👥 Bewertungen:');
+                                    
+                                    if (gameDetails && gameDetails.users) {
+                                        // Sortiere Benutzer nach Punkten (niedrigste zuerst = beste Bewertung)
+                                        var sortedUsers = gameDetails.users.sort(function(a, b) {
+                                            return a.points - b.points;
+                                        });
+                                        
+                                        sortedUsers.forEach(function(userEntry) {
+                                            var emoji = '';
+                                            if (userEntry.points === 1) emoji = '🥇';
+                                            else if (userEntry.points === 2) emoji = '🥈';
+                                            else if (userEntry.points === 3) emoji = '🥉';
+                                            else emoji = '📍';
+                                            
+                                            lines.push(emoji + ' ' + userEntry.user + ': Rang ' + userEntry.points);
+                                        });
+                                    }
+                                    
+                                    return lines;
                                 }
                             }
                         }

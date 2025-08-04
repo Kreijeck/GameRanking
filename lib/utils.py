@@ -29,3 +29,36 @@ def calc_sum(spielliste: str) -> dict:
         results[game] = sum
 
     return results
+
+def calc_detailed_data(spielliste: str) -> dict:
+    """
+    Berechnet detaillierte Daten für Tooltips mit User-spezifischen Punkten.
+    Gibt ein Dictionary zurück mit Spiel -> {sum, users: [{user, points}]}
+    """
+    game_keys = _get_game_keys(spielliste)
+    ranking_data = load_ranking(spielliste)
+    
+    results = {}
+    
+    for game in game_keys:
+        game_sum = 0
+        user_points = []
+        
+        for entry in ranking_data:
+            user = entry.get('user', '')
+            rank_value = entry.get('rankings', {}).get(game, '')
+            
+            if rank_value and str(rank_value).isdigit():
+                points = int(rank_value)
+                game_sum += points
+                user_points.append({
+                    'user': user,
+                    'points': points
+                })
+        
+        results[game] = {
+            'sum': game_sum,
+            'users': user_points
+        }
+    
+    return results
