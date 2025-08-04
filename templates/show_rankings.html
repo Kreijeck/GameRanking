@@ -1,23 +1,294 @@
 <!doctype html>
-<html>
+<html lang="de">
 <head>
-    <title>Rankings anzeigen</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rankings verwalten - Game Ranking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><radialGradient id="a" cx="50%" cy="40%"><stop offset="0%" stop-color="%23fff" stop-opacity=".1"/><stop offset="100%" stop-color="%23fff" stop-opacity="0"/></radialGradient></defs><rect width="100" height="20" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .list-section {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-entries {
+            padding: 25px;
+        }
+
+        .user-entry {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .user-entry:hover {
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+        }
+
+        .rankings-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .ranking-item {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .rank-number {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #4f46e5;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-link:hover {
+            background: #4f46e5;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .user-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .rankings-display {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Rankings</h1>
-    {% for list_name, list_rankings in rankings.items() %}
-        <h2>{{ list_name }}</h2>
-        <ul>
-            {% for entry in list_rankings %}
-                <li>
-                    {{ entry['user'] }}: {{ entry['rankings'] }}
-                    <!-- Link zum Löschen eines Benutzers -->
-                    <form action="{{ url_for('delete_user', list_name=list_name, user_name=entry['user']) }}" method="post">
-                        <input type="submit" value="Benutzer löschen">
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Rankings verwalten</h1>
+            <p>Übersicht und Verwaltung aller Benutzerbewertungen</p>
+        </div>
+        
+        <div class="content">
+            {% if rankings %}
+                {% for list_name, list_rankings in rankings.items() %}
+                    <div class="list-section">
+                        <div class="list-header">
+                            🎲 {{ list_name }}
+                        </div>
+                        <div class="user-entries">
+                            {% for entry in list_rankings %}
+                                <div class="user-entry">
+                                    <div class="user-header">
+                                        <div class="user-name">
+                                            👤 {{ entry['user'] }}
+                                        </div>
+                                        <form action="{{ url_for('delete_user', list_name=list_name, user_name=entry['user']) }}" method="post" style="margin: 0;" onsubmit="return confirmDeleteUser(this)">
+                                            <input type="hidden" name="user_name_display" value="{{ entry['user'] }}">
+                                            <button type="submit" class="delete-btn">
+                                                🗑️ Löschen
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="rankings-display">
+                                        {% for game, rank in entry['rankings'].items() %}
+                                            <div class="ranking-item">
+                                                <span class="game-name">{{ game }}</span>
+                                                <span class="rank-number">{{ rank }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <h3>Keine Rankings vorhanden</h3>
+                    <p>Es wurden noch keine Bewertungen abgegeben.</p>
+                </div>
+            {% endif %}
+            
+            <a href="{{ url_for('index') }}" class="back-link">
+                ← Zurück zur Übersicht
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        function confirmDeleteUser(form) {
+            const userName = form.querySelector('input[name="user_name_display"]').value;
+            return confirm('Sind Sie sicher, dass Sie "' + userName + '" löschen möchten?');
+        }
+    </script>
 </body>
 </html>

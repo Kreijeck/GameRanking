@@ -1,10 +1,13 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 
-from lib.yaml_ops import load_games, load_ranking_all, save_ranking, delete_user_in_ranking
+from lib.yaml_ops import load_games, load_ranking_all, save_ranking, delete_user_in_ranking, save_new_game_list, delete_game_list
 from lib.utils import calc_sum, get_users
 
 app = Flask(__name__)
+
+# Passwort für Admin-Funktionen (in Produktion sollte dies in einer Konfigurationsdatei oder Umgebungsvariable stehen)
+ADMIN_PASSWORD = "kreijecksworld"
 
 
 
@@ -50,6 +53,54 @@ def delete_user(list_name, user_name):
     delete_user_in_ranking(list_name, user_name)
 
     return redirect(url_for('show_rankings'))
+
+@app.route('/new_list', methods=['GET', 'POST'])
+def new_list():
+    error_message = None
+    
+    if request.method == 'POST':
+        password = request.form.get('password')
+        
+        if password != ADMIN_PASSWORD:
+            error_message = "Falsches Passwort!"
+        else:
+            list_name = request.form.get('list_name')
+            games_input = request.form.get('games')
+            
+            # Teile die Spiele auf (getrennt durch Zeilenumbrüche oder Kommas)
+            games = [game.strip() for game in games_input.replace(',', '\n').split('\n') if game.strip()]
+            
+            if list_name and games:
+                save_new_game_list(list_name, games)
+                return redirect(url_for('index'))
+            else:
+                error_message = "Bitte füllen Sie alle Felder aus!"
+    
+    return render_template('new_list.html', error_message=error_message)
+
+@app.route('/delete_list', methods=['GET', 'POST'])
+def delete_list():
+    games_lists = load_games()
+    error_message = None
+    success_message = None
+    
+    if request.method == 'POST':
+        password = request.form.get('password')
+        list_name = request.form.get('list_name')
+        
+        if password != ADMIN_PASSWORD:
+            error_message = "Falsches Passwort!"
+        elif not list_name:
+            error_message = "Bitte wählen Sie eine Liste zum Löschen aus!"
+        else:
+            if delete_game_list(list_name):
+                success_message = f"Liste '{list_name}' wurde erfolgreich gelöscht!"
+                games_lists = load_games()  # Liste neu laden
+            else:
+                error_message = "Fehler beim Löschen der Liste!"
+    
+    return render_template('delete_list.html', games_lists=games_lists, 
+                         error_message=error_message, success_message=success_message)
 
 
 
