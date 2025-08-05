@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 
-from lib.yaml_ops import load_games, load_ranking_all, save_ranking, delete_user_in_ranking, save_new_game_list, delete_game_list
+from lib.yaml_ops import load_games, load_ranking_all, save_ranking, delete_user_in_ranking, save_new_game_list, delete_game_list, load_ranking
 from lib.utils import calc_sum, get_users, calc_detailed_data
 
 app = Flask(__name__)
@@ -31,13 +31,34 @@ def list_details(list_name):
 
 @app.route('/view_results/<list_name>')
 def view_results(list_name):
-    # Lade die Ergebnisse aus der 'rankings.yaml'-Datei
-    # Verarbeitung, um die notwendigen Daten für die Anzeige zu erhalten
-    sum_list = calc_sum(list_name)
-    detailed_data = calc_detailed_data(list_name)
-    user_list = get_users(list_name)
-    return render_template('view_results.html', list_name=list_name, 
-                         game_data=sum_list, detailed_data=detailed_data, user_list=user_list)
+    try:
+        # Überprüfe, ob die Liste existiert
+        games_lists = load_games()
+        if list_name not in games_lists:
+            return redirect(url_for('index'))
+        
+        # Lade die Ergebnisse aus der 'rankings.yaml'-Datei
+        sum_list = calc_sum(list_name)
+        user_list = get_users(list_name)
+        
+        # Versuche detaillierte Daten zu laden, falls verfügbar
+        try:
+            detailed_data = calc_detailed_data(list_name)
+        except Exception as e:
+            print(f"Fehler beim Laden der detaillierten Daten: {e}")
+            # Fallback: Erstelle einfache detaillierte Daten aus den Grunddaten
+            detailed_data = {}
+            for game, total_score in sum_list.items():
+                detailed_data[game] = {
+                    'sum': total_score,
+                    'users': []
+                }
+        
+        return render_template('view_results.html', list_name=list_name, 
+                             game_data=sum_list, detailed_data=detailed_data, user_list=user_list)
+    except Exception as e:
+        print(f"Fehler in view_results: {e}")
+        return f"Fehler beim Laden der Ergebnisse: {str(e)}", 500
 
 @app.route('/show_rankings')
 def show_rankings():
@@ -102,6 +123,27 @@ def delete_list():
     
     return render_template('delete_list.html', games_lists=games_lists, 
                          error_message=error_message, success_message=success_message)
+
+@app.route('/debug/<list_name>')
+def debug_data(list_name):
+    """Debug-Route um Datenprobleme zu identifizieren"""
+    try:
+        games_lists = load_games()
+        rankings = load_ranking_all()
+        list_rankings = load_ranking(list_name)
+        
+        debug_info = {
+            'list_name': list_name,
+            'games_lists_keys': list(games_lists.keys()) if games_lists else [],
+            'games_for_list': games_lists.get(list_name, []) if games_lists else [],
+            'rankings_keys': list(rankings.keys()) if rankings else [],
+            'list_rankings': list_rankings,
+            'list_rankings_count': len(list_rankings) if list_rankings else 0
+        }
+        
+        return f"<h1>Debug Info für {list_name}</h1><pre>{debug_info}</pre>"
+    except Exception as e:
+        return f"<h1>Debug Fehler</h1><pre>{str(e)}</pre>"
 
 
 

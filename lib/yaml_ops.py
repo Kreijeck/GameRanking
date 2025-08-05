@@ -19,8 +19,14 @@ def load_games() -> dict:
 def load_ranking_all() -> dict:
     return load_yaml(RANKING_YAML)
 
-def load_ranking(spielliste: str) -> dict:
-    return load_yaml(RANKING_YAML, spielliste)
+def load_ranking(spielliste: str) -> list:
+    """Lädt die Rankings für eine spezifische Spieleliste und gibt eine Liste zurück"""
+    try:
+        all_rankings = load_yaml(RANKING_YAML)
+        return all_rankings.get(spielliste, [])
+    except Exception as e:
+        print(f"Fehler beim Laden der Rankings für {spielliste}: {e}")
+        return []
     
 def save_ranking(list_name: str, user_name: str, rankings: dict) -> None:
     # Lese vorhandene Rankings
