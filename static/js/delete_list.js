@@ -27,20 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Bestätigungsdialog
             const listName = listSelect.options[listSelect.selectedIndex].text;
-            const confirmMessage = `⚠️ ACHTUNG!\n\n` +
-                                 `Sie sind dabei, die Liste "${listName}" zu löschen.\n\n` +
-                                 `Diese Aktion kann NICHT rückgängig gemacht werden!\n` +
-                                 `Alle zugehörigen Rankings werden ebenfalls gelöscht.\n\n` +
-                                 `Sind Sie sich sicher?`;
+            const confirmMessage = `🔴 ACHTUNG - Liste löschen!\n\n` +
+                                 `Sie möchten die Liste "${listName}" permanent löschen.\n\n` +
+                                 `⚠️  Diese Aktion kann NICHT rückgängig gemacht werden!\n` +
+                                 `⚠️  Alle zugehörigen Rankings werden ebenfalls gelöscht!\n\n` +
+                                 `Sind Sie sich sicher, dass Sie fortfahren möchten?`;
             
             if (!confirm(confirmMessage)) {
-                event.preventDefault();
-                return false;
-            }
-            
-            // Zusätzliche Bestätigung für besonders kritische Aktion
-            const doubleConfirm = confirm('🔴 LETZTE WARNUNG!\n\nSind Sie wirklich sicher, dass Sie diese Liste endgültig löschen möchten?');
-            if (!doubleConfirm) {
                 event.preventDefault();
                 return false;
             }
@@ -74,21 +67,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.backgroundColor = '#fff';
             }
         });
-    }
-});
-
-/**
- * Zeigt eine Warnung an, wenn der Benutzer die Seite verlassen will
- */
-window.addEventListener('beforeunload', function(event) {
-    const form = document.querySelector('form');
-    const passwordField = document.getElementById('password');
-    const listSelect = document.getElementById('list_name');
-    
-    // Warnung nur anzeigen, wenn Daten eingegeben wurden
-    if (form && ((passwordField && passwordField.value.trim()) || (listSelect && listSelect.value))) {
-        const message = 'Sie haben Daten eingegeben. Sind Sie sicher, dass Sie die Seite verlassen möchten?';
-        event.returnValue = message;
-        return message;
     }
 });
