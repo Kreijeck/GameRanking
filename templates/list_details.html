@@ -41,7 +41,7 @@
     <div class="container">
         <div class="header primary">
             <h1>🏆 {{ list_name }}</h1>
-            <p>Bewerten Sie die Spiele von 1 (am besten) bis {{ games|length }} (am schlechtesten)</p>
+            <p>Was willst du als nächstes spielen? Bewerte von {{ games|length }} (am besten) bis 1 (am schlechtesten)</p>
         </div>
         
         <div class="form-container">
@@ -56,7 +56,7 @@
                         <div class="game-container">
                             <div class="game-name">{{ game }}</div>
                             <select name="rank-{{ game }}" id="rank-{{ game }}">
-                                <option value="">Rang wählen...</option>
+                                <option value="">Punkte vergeben...</option>
                                 {% for i in range(games|length) %}
                                     <option value="{{ i+1 }}">{{ i+1 }}</option>
                                 {% endfor %}
