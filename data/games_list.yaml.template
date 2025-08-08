@@ -1,0 +1,16 @@
+# GameRanking Spielelisten
+# Diese Datei ist ein Template - die echte games_list.yaml wird vom Server generiert
+# und ist in .gitignore ausgeschlossen
+
+games:
+  # Beispiel-Eintrag:
+  # Listenname:
+  # - Spiel 1
+  # - Spiel 2
+  # - Spiel 3
+  
+  # Template-Beispiel:
+  "Beispiel-Runde":
+    - "Beispiel-Spiel 1"
+    - "Beispiel-Spiel 2"
+    - "Beispiel-Spiel 3"

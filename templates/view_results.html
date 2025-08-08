@@ -1,63 +1,57 @@
 <!doctype html>
-<html>
+<html lang="de">
 <head>
-    <title>Ergebnisse - {{ list_name }}</title>
-    <!-- Einbinden von Chart.js -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ergebnisse - {{ list_name }} - Game Ranking</title>
+    
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
-
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_results.css') }}">
 </head>
 <body>
-    <h1>Ergebnisse für {{ list_name }}</h1>
-    <!-- Anzeige der Ergebnisse -->
-    <p> Folgende Personen haben bereits abgestimmt:</p>
-    <ul>
-        {% for user in user_list %}
-        <li> {{ user }}</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Ergebnisse</h1>
+            <p>{{ list_name }}</p>
+        </div>
+        
+        <div class="content">
+            <div class="participants-section">
+                <h2>👥 Teilnehmer ({{ user_list|length }})</h2>
+                <ul class="participants-list">
+                    {% for user in user_list %}
+                        <li class="participant-item">
+                            👤 {{ user }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-    <!-- Container für das Bardiagramm -->
-    <canvas id="resultsChart"></canvas>
+            <div class="chart-section">
+                <h2>🏆 Ranking der Spiele</h2>
+                <div class="chart-container">
+                    <canvas id="resultsChart"></canvas>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('index') }}" class="back-link">
+                ← Zurück zur Übersicht
+            </a>
+        </div>
+    </div>
     
+    <!-- Data for JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var ctx = document.getElementById('resultsChart').getContext('2d');
-    
-            var gameData = {{ game_data | tojson | safe}};
-
-            // Umwandeln des Objekts in ein Array von [key, value]-Paaren und Sortieren
-            var sortedGameData = Object.entries(gameData).sort((a, b) => b[1] - a[1]);
-    
-            // Trennen der Schlüssel und Werte nach der Sortierung
-            var gameNames = sortedGameData.map(item => item[0]);
-            var gameScores = sortedGameData.map(item => item[1]);
-    
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: gameNames,
-                    datasets: [{
-                        label: 'Punktzahl',
-                        data: gameScores,
-                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                        borderColor: 'rgba(0, 123, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    scales: {
-                        x: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        });
+        // Backend-Daten für JavaScript verfügbar machen
+        var gameData = JSON.parse('{{ game_data | tojson | safe }}');
+        var detailedData = JSON.parse('{{ detailed_data | tojson | safe }}');
     </script>
     
-    
-    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/view_results.js') }}"></script>
 </body>
 </html>

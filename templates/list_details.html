@@ -1,89 +1,82 @@
 <!doctype html>
-<html>
+<html lang="de">
 <head>
-    <title>{{ list_name }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ list_name }} - Game Ranking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <style>
-        select option[disabled] {
-            display: none;
+        /* Spezifische Styles für List Details */
+        .container {
+            max-width: 800px;
         }
-        select {
-            width: 50px;
-            margin-right: 10px;
+        
+        .header h1 {
+            font-size: 2rem;
         }
-        label {
-            margin-right: 10px;
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
-        .game-container {
-            margin-bottom: 10px;
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Funktion, um die Dropdown-Menüs zu aktualisieren
-            function updateDropdowns() {
-                let allSelectedValues = Array.from(document.querySelectorAll('select'))
-                                            .map(select => select.value);
-    
-                document.querySelectorAll('select').forEach(function(select) {
-                    let currentValue = select.value;
-                    select.querySelectorAll('option').forEach(function(option) {
-                        if (option.value !== currentValue && allSelectedValues.includes(option.value)) {
-                            option.disabled = true;
-                        } else {
-                            option.disabled = false;
-                        }
-                    });
-                });
-            }
-    
-            // Funktion, die überprüft, ob alle Dropdown-Menüs ausgefüllt sind
-            function validateForm() {
-                let allSelects = document.querySelectorAll('select');
-                for (let select of allSelects) {
-                    if (select.value === "") {
-                        alert("Bitte fülle alle Felder aus, ansonsten kann deine Eingabe nicht gespeichert werden.");
-                        return false;  // Verhindert das Absenden des Formulars
-                    }
-                }
-                return true;  // Erlaubt das Absenden des Formulars
-            }
-    
-            // Event-Listener für die Änderung der Dropdown-Menüs
-            document.querySelectorAll('select').forEach(function(select) {
-                select.addEventListener('change', updateDropdowns);
-            });
-    
-            // Event-Listener für das Formular-Submit
-            let form = document.querySelector('form');
-            form.onsubmit = validateForm;
-    
-            // Initialer Aufruf, um die Dropdown-Menüs richtig zu initialisieren
-            updateDropdowns();
-        });
-    </script>
-    
 </head>
 <body>
-    <h1>{{ list_name }}</h1>
-    <form method="post">
-        <div class="game-container">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required placeholder="Name eintragen">
+    <div class="container">
+        <div class="header primary">
+            <h1>🏆 {{ list_name }}</h1>
+            <p>Bewerten Sie die Spiele von 1 (am besten) bis {{ games|length }} (am schlechtesten)</p>
         </div>
-        {% for game in games %}
-            <div class="game-container">
-                <label for="rank-{{ game }}">{{ game }}</label>
-                <select name="rank-{{ game }}" id="rank-{{ game }}">
-                    <option value="">Wählen...</option>
-                    {% for i in range(games|length) %}
-                        <option value="{{ i+1 }}">{{ i+1 }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        {% endfor %}
         
-        <input type="submit" value="Rankings speichern">
-    </form>
+        <div class="form-container">
+            <form method="post">
+                <div class="name-input-container">
+                    <label for="name">👤 Ihr Name:</label>
+                    <input type="text" id="name" name="name" required placeholder="Geben Sie Ihren Namen ein">
+                </div>
+                
+                <div class="games-grid">
+                    {% for game in games %}
+                        <div class="game-container">
+                            <div class="game-name">{{ game }}</div>
+                            <select name="rank-{{ game }}" id="rank-{{ game }}">
+                                <option value="">Rang wählen...</option>
+                                {% for i in range(games|length) %}
+                                    <option value="{{ i+1 }}">{{ i+1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="submit-container">
+                    <button type="submit" class="submit-btn">
+                        💾 Rankings speichern
+                    </button>
+                    <br>
+                    <a href="{{ url_for('index') }}" class="back-link">← Zurück zur Übersicht</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/list_details.js') }}"></script>
 </body>
 </html>
 

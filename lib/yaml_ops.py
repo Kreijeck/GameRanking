@@ -19,8 +19,14 @@ def load_games() -> dict:
 def load_ranking_all() -> dict:
     return load_yaml(RANKING_YAML)
 
-def load_ranking(spielliste: str) -> dict:
-    return load_yaml(RANKING_YAML, spielliste)
+def load_ranking(spielliste: str) -> list:
+    """Lädt die Rankings für eine spezifische Spieleliste und gibt eine Liste zurück"""
+    try:
+        all_rankings = load_yaml(RANKING_YAML)
+        return all_rankings.get(spielliste, [])
+    except Exception as e:
+        print(f"Fehler beim Laden der Rankings für {spielliste}: {e}")
+        return []
     
 def save_ranking(list_name: str, user_name: str, rankings: dict) -> None:
     # Lese vorhandene Rankings
@@ -51,3 +57,53 @@ def delete_user_in_ranking(list_name, user_name):
 
         with open(RANKING_YAML, 'w') as file:
             yaml.dump(rankings, file)
+
+def save_new_game_list(list_name: str, games: list) -> None:
+    """Speichert eine neue Spieleliste in der games_list.yaml"""
+    try:
+        with open(GAMELIST_YAML, 'r') as file:
+            data = yaml.safe_load(file) or {}
+    except FileNotFoundError:
+        data = {}
+    
+    if 'games' not in data:
+        data['games'] = {}
+    
+    # Füge die neue Spieleliste hinzu
+    data['games'][list_name] = games
+    
+    # Speichere die aktualisierte Datei
+    with open(GAMELIST_YAML, 'w') as file:
+        yaml.dump(data, file, default_flow_style=False, allow_unicode=True)
+
+def delete_game_list(list_name: str) -> bool:
+    """Löscht eine Spieleliste aus der games_list.yaml"""
+    try:
+        with open(GAMELIST_YAML, 'r') as file:
+            data = yaml.safe_load(file) or {}
+    except FileNotFoundError:
+        return False
+    
+    if 'games' not in data or list_name not in data['games']:
+        return False
+    
+    # Entferne die Spieleliste
+    del data['games'][list_name]
+    
+    # Speichere die aktualisierte Datei
+    with open(GAMELIST_YAML, 'w') as file:
+        yaml.dump(data, file, default_flow_style=False, allow_unicode=True)
+    
+    # Lösche auch die zugehörigen Rankings
+    try:
+        with open(RANKING_YAML, 'r') as file:
+            rankings = yaml.safe_load(file) or {}
+        
+        if list_name in rankings:
+            del rankings[list_name]
+            with open(RANKING_YAML, 'w') as file:
+                yaml.dump(rankings, file)
+    except FileNotFoundError:
+        pass  # Rankings-Datei existiert nicht
+    
+    return True

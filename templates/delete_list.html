@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spieleliste löschen - Game Ranking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header danger">
+            <h1>🗑️ Spieleliste löschen</h1>
+            <p>Achtung: Dies löscht die Liste und alle zugehörigen Rankings permanent!</p>
+        </div>
+        
+        <div class="content">
+            {% if error_message %}
+                <div class="message error">
+                    ⚠️ {{ error_message }}
+                </div>
+            {% endif %}
+            
+            {% if success_message %}
+                <div class="message success">
+                    ✅ {{ success_message }}
+                </div>
+            {% endif %}
+            
+            {% if games_lists %}
+                <div class="warning-box">
+                    <h3>⚠️ Warnung!</h3>
+                    <p>Das Löschen einer Spieleliste kann nicht rückgängig gemacht werden. Alle zugehörigen Rankings werden ebenfalls gelöscht.</p>
+                </div>
+                
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="password">🔒 Admin-Passwort:</label>
+                        <input type="password" id="password" name="password" required 
+                               placeholder="Passwort eingeben">
+                        <div class="help-text">Passwort erforderlich für Admin-Funktionen</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="list_name">📋 Zu löschende Spieleliste:</label>
+                        <select id="list_name" name="list_name" required>
+                            <option value="">Liste auswählen...</option>
+                            {% for list_name in games_lists.keys() %}
+                                <option value="{{ list_name }}">{{ list_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="help-text">Wählen Sie die Liste, die gelöscht werden soll</div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-danger">
+                            🗑️ Liste löschen
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            ↩️ Zurück zur Übersicht
+                        </a>
+                    </div>
+                </form>
+            {% else %}
+                <div class="no-lists">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m0 0V9a2 2 0 012-2h2m-4 4v4a2 2 0 002 2h2m0-4V9a2 2 0 012-2h2"></path>
+                    </svg>
+                    <h3>Keine Listen vorhanden</h3>
+                    <p>Es gibt keine Spielelisten zum Löschen.</p>
+                    <br>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                        ↩️ Zurück zur Übersicht
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/delete_list.js') }}"></script>
+</body>
+</html>
