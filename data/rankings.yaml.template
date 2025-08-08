@@ -1,0 +1,22 @@
+# GameRanking Bewertungen
+# Diese Datei ist ein Template - die echte rankings.yaml wird vom Server generiert
+# und ist in .gitignore ausgeschlossen
+
+rankings:
+  # Beispiel-Struktur:
+  # Listenname:
+  #   Benutzername:
+  #     Spielname: Rang
+  #   Anderer_Benutzer:
+  #     Spielname: Rang
+  
+  # Template-Beispiel:
+  "Beispiel-Runde":
+    "BeispielUser1":
+      "Beispiel-Spiel 1": 1
+      "Beispiel-Spiel 2": 2
+      "Beispiel-Spiel 3": 3
+    "BeispielUser2":
+      "Beispiel-Spiel 1": 2
+      "Beispiel-Spiel 2": 1
+      "Beispiel-Spiel 3": 3
