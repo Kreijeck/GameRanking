@@ -9,19 +9,13 @@ Mittwochsrunde 06.08.25:
     Inferno: '1'
     Seti: '3'
   user: Uddi
-Test123:
 - rankings:
-    Arche Nova: '1'
-    Inferno: '2'
-    Kolonisten: '3'
-  user: "Str\xE4hli"
-- rankings:
-    Arche Nova: '3'
+    Arche Nova: '2'
     Inferno: '1'
-    Kolonisten: '2'
-  user: Dally
+    Seti: '3'
+  user: thomas23
+test234:
 - rankings:
-    Arche Nova: '3'
-    Inferno: '1'
-    Kolonisten: '2'
-  user: "Str\xE4hli"
+    Spiel1: '1'
+    spiel12: '2'
+  user: BGG

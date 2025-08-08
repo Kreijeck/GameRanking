@@ -3,7 +3,6 @@ games:
   - Inferno
   - Arche Nova
   - Seti
-  Test123:
-  - Inferno
-  - Kolonisten
-  - Arche Nova
+  test234:
+  - Spiel1
+  - spiel12
