@@ -167,8 +167,11 @@ function generateTooltipContent(context) {
         // Ermittle die maximale Punktzahl für dieses Spiel
         const maxPoints = Math.max(...sortedUsers.map(u => u.points));
         
+        // Ermittle die Anzahl der Spiele in der Liste für dynamische Emoji-Vergabe
+        const totalGames = Object.keys(gameData).length;
+        
         sortedUsers.forEach(function(userEntry) {
-            const emoji = getPointsBasedEmoji(userEntry.points, maxPoints);
+            const emoji = getPointsBasedEmoji(userEntry.points, maxPoints, totalGames);
             lines.push(emoji + ' ' + userEntry.user + ': ' + userEntry.points + ' Punkte');
         });
     }
@@ -178,17 +181,26 @@ function generateTooltipContent(context) {
 
 /**
  * Gibt das entsprechende Emoji basierend auf der absoluten Punktzahl zurück
+ * Dynamisch angepasst an die Anzahl der verfügbaren Spiele
  */
-function getPointsBasedEmoji(points, maxPoints) {
-    // Emojis basierend auf absoluter Punktzahl
-    if (points === maxPoints && points >= 5) {
-        return '🥇'; // Gold für maximale Punkte (und mindestens 5)
-    } else if (points >= maxPoints - 1 && points >= 4) {
-        return '🥈'; // Silber für sehr hohe Punkte
-    } else if (points >= maxPoints - 2 && points >= 3) {
-        return '🥉'; // Bronze für gute Punkte
-    } else {
-        return '📍'; // Standard für niedrige Punkte
+function getPointsBasedEmoji(points, maxPoints, totalGames) {
+    // Dynamische Schwellwerte basierend auf der Anzahl der Spiele
+    // Bei 3 Spielen: Max = 3, bei 4 Spielen: Max = 4, bei 5+ Spielen: Max = 5+
+    
+    // Gold: Maximale Punkte erreicht
+    if (points === maxPoints && points === totalGames) {
+        return '🥇'; // Gold für perfekte Bewertung (alle Spiele auf Platz 1)
+    }
+    // Silber: Sehr hohe Punktzahl (höchstens 1 Punkt unter Maximum)
+    else if (points >= maxPoints - 1 && points >= Math.max(2, totalGames - 1)) {
+        return '🥈'; // Silber für sehr gute Bewertung
+    }
+    // Bronze: Gute Punktzahl (höchstens 2 Punkte unter Maximum oder mindestens 60% der maximalen Punkte)
+    else if (points >= Math.max(1, Math.floor(totalGames * 0.6))) {
+        return '🥉'; // Bronze für gute Bewertung
+    }
+    else {
+        return '📍'; // Standard für niedrigere Punkte
     }
 }
 

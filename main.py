@@ -7,7 +7,7 @@ from lib.utils import calc_sum, get_users, calc_detailed_data
 app = Flask(__name__)
 
 # Passwort für Admin-Funktionen (in Produktion sollte dies in einer Konfigurationsdatei oder Umgebungsvariable stehen)
-ADMIN_PASSWORD = "kreijecksworld"
+ADMIN_PASSWORD = "52"
 
 
 
