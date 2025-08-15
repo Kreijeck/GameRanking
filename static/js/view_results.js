@@ -40,7 +40,7 @@ function initializeResultsChart() {
  * Bereitet die Chart-Daten vor und sortiert sie
  */
 function prepareChartData(gameData) {
-    // Umwandeln des Objekts in Array und nach Punkten sortieren (höchste zuerst)
+    // Umwandeln des Objekts in Array und nach Punkten sortieren (höchste zuerst = beste Spiele)
     const sortedGameData = Object.entries(gameData).sort((a, b) => b[1] - a[1]);
     
     // Spielnamen und Punkte extrahieren
@@ -161,12 +161,15 @@ function generateTooltipContent(context) {
     lines.push('👥 Bewertungen:');
     
     if (gameDetails && gameDetails.users) {
-        // Sortiere Benutzer nach Punkten (niedrigste zuerst = beste Bewertung)
-        const sortedUsers = gameDetails.users.sort((a, b) => a.points - b.points);
+        // Sortiere Benutzer nach Punkten (höchste zuerst = beste Bewertung)
+        const sortedUsers = gameDetails.users.sort((a, b) => b.points - a.points);
+        
+        // Ermittle die maximale Punktzahl für dieses Spiel
+        const maxPoints = Math.max(...sortedUsers.map(u => u.points));
         
         sortedUsers.forEach(function(userEntry) {
-            const emoji = getRankEmoji(userEntry.points);
-            lines.push(emoji + ' ' + userEntry.user + ': Rang ' + userEntry.points);
+            const emoji = getPointsBasedEmoji(userEntry.points, maxPoints);
+            lines.push(emoji + ' ' + userEntry.user + ': ' + userEntry.points + ' Punkte');
         });
     }
     
@@ -174,7 +177,23 @@ function generateTooltipContent(context) {
 }
 
 /**
- * Gibt das entsprechende Emoji für den Rang zurück
+ * Gibt das entsprechende Emoji basierend auf der absoluten Punktzahl zurück
+ */
+function getPointsBasedEmoji(points, maxPoints) {
+    // Emojis basierend auf absoluter Punktzahl
+    if (points === maxPoints && points >= 5) {
+        return '🥇'; // Gold für maximale Punkte (und mindestens 5)
+    } else if (points >= maxPoints - 1 && points >= 4) {
+        return '🥈'; // Silber für sehr hohe Punkte
+    } else if (points >= maxPoints - 2 && points >= 3) {
+        return '🥉'; // Bronze für gute Punkte
+    } else {
+        return '📍'; // Standard für niedrige Punkte
+    }
+}
+
+/**
+ * Gibt das entsprechende Emoji für den Rang zurück (legacy function - wird nicht mehr verwendet)
  */
 function getRankEmoji(points) {
     switch(points) {
